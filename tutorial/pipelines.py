@@ -6,6 +6,7 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import logging
 from contextlib import contextmanager
+from datetime import datetime
 from logging.handlers import RotatingFileHandler
 
 import scrapy
@@ -91,11 +92,12 @@ class DBPipeline(object):
     #     pipelineLogging.info("DBPipeline closed")
 
     def process_item(self, item, spider):
-        pipelineLogging.info("DBPipeline Processing..id= %s" % str(item['cid']))
 
+        item['updateDate'] = datetime.now()
         accmt = ACComment(**item)
         with session_scope(self.Session) as session:
             session.add(accmt)
+        pipelineLogging.info("Item saved: %s" % str(item))
         return item
 
 
@@ -110,5 +112,5 @@ class MyImagesPipeline(ImagesPipeline):
         if(results[0][0]):
             item['localImgPath'] = results[0][1]['path']
 
-        pipelineLogging.info("MyImagesPipeline item_completed item %s " % str(item))
+        pipelineLogging.info("MyImagesPipeline item_completed item %s " % str(item['cid']))
         return item

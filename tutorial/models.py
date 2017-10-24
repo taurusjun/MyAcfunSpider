@@ -54,6 +54,7 @@ class ACComment(Base):
     isUpDelete = Column(Boolean)
     nameType = Column(Integer)
     verified = Column(Integer)
+    updateDate = Column(DateTime)
 
 class ACCommentCache(Base):
     """文章类"""

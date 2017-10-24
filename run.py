@@ -22,12 +22,13 @@ from datetime import timedelta, datetime
 mLRU = LRU(102400)
 CONTROL='control'
 
+logging.basicConfig(level=logging.INFO)
+
 formatter = logging.Formatter('%(asctime)s [%(name)s] %(levelname)s: %(message)s')
 handler = RotatingFileHandler("Run.log", maxBytes=3 * 1024 * 1024)
 handler.setFormatter(formatter)
 runLogging = logging.getLogger("Run")
 runLogging.addHandler(handler)
-
 
 def checkIfToStopRun():
     f = open(CONTROL, 'r+')
@@ -36,6 +37,7 @@ def checkIfToStopRun():
         onShutDown()
         reactor.stop()
         print ("Stop reactor!")
+        runLogging.info("Stop reactor!")
 
 
 def saveLRUItems():
@@ -90,9 +92,27 @@ def loadLRUItems():
     runLogging.info("%s items loaded, before start the reactor!" % itemCount)
     session.close()
 
+def clearItemCache():
+    engine = db_connect()
+    create_news_table(engine)
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    try:
+        num_rows_deleted = session.query(ACCommentCache).delete()
+        session.commit()
+        print ("%s items deleted!" % num_rows_deleted)
+        runLogging.info ("%s items deleted!" % num_rows_deleted)
+    except:
+        session.rollback()
+        print ("Could not clear table, rollback!")
+        runLogging.info ("Could not clear table, rollback!")
+
+
 def onShutDown():
     saveLRUItems()
     mLRU.clear()
+    runLogging.info("Stop reactor!")
+
 
 def crawl_work():
     # cmdline.execute('scrapy crawl acfun'.split())
@@ -112,16 +132,18 @@ def crawl_work_singleRun():
     # crawler = CrawlerRunner(settings)
     crawler.crawl(AcfunSpider, cache=mLRU)
     crawler.start()
-    saveLRUItems()
+    # saveLRUItems()
     mLRU.clear()
 
 
 if __name__=='__main__':
     loadLRUItems()
+    clearItemCache()
     # 定时跑
     lc = task.LoopingCall(crawl_work)
     lc.start(5)
     print ("Start reactor!")
+    runLogging.info("Start reactor!")
     reactor.addSystemEventTrigger('before', 'shutdown', onShutDown)
     reactor.run()
 

@@ -35,3 +35,4 @@ class AcfunCommentItem(scrapy.Item):
     isUpDelete = scrapy.Field()
     nameType = scrapy.Field()
     verified = scrapy.Field()
+    updateDate = scrapy.Field()
