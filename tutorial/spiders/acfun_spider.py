@@ -32,7 +32,7 @@ class AcfunSpider(CrawlSpider):
         replyListItems = self.parse_reply_list(response)
         for itm in replyListItems:
             acid = itm['link'][0][5:]
-            url = "http://www.acfun.tv/comment_list_json.aspx?contentId=" + str(acid) + "&currentPage=1"
+            url = "http://www.acfun.cn/comment_list_json.aspx?contentId=" + str(acid) + "&currentPage=1"
             yield scrapy.Request(url, meta={'acid':str(acid)}, callback=self.parse_comment_contents)
 
         # print 1

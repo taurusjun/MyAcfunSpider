@@ -109,6 +109,7 @@ def clearItemCache():
 
 
 def onShutDown():
+    runLogging.info("Finalizing...")
     saveLRUItems()
     mLRU.clear()
     runLogging.info("Stop reactor!")

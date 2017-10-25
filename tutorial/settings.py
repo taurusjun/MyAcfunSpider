@@ -122,3 +122,19 @@ DATABASE = {'drivername': 'mysql',
 # LOG_STDOUT = True
 # LOG_FORMAT = "%(asctime)s [%(name)s] %(levelname)s: %(message)s"
 # LOG_DATEFORMAT = "%Y-%m-%d %H:%M:%S"
+
+###### 防止爬虫被ban ######
+# 绕过robots策略
+ROBOTSTXT_OBEY = False
+# # 禁用Cookie
+# COOKIES_ENABLED = False
+# # 限制爬取速度
+# DOWNLOAD_DELAY = 5
+# # 禁止重定向
+# REDIRECT_ENABLED = False
+# # 全局并发数
+# CONCURRENT_REQUESTS = 500
+# # 禁止重试
+# RETRY_ENABLED = False
+# # 减小下载超时
+# DOWNLOAD_TIMEOUT = 15
