@@ -19,7 +19,8 @@ from tutorial.models import db_connect, ACComment, ACCommentCache, create_news_t
 from tutorial.spiders.acfun_spider import AcfunSpider, AcfunItem, AcfunCommentItem
 from datetime import timedelta, datetime
 
-mLRU = LRU(102400)
+# 实测当LRU中元素到15000时，终端运行时终端进行占内存大小为4GB左右，估计将其作为守护进程会更好
+mLRU = LRU(10240)
 CONTROL='control'
 
 logging.basicConfig(level=logging.INFO)
